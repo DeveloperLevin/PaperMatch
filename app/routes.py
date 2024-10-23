@@ -2,6 +2,6 @@ from flask import Blueprint
 
 main = Blueprint('main', __name__)
 
-@main.route('/', methods=['POST'])
+@main.route('/api/recommend', methods=['POST'])
 def home():
     return 
