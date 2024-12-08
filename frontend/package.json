@@ -8,11 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:css": "npx tailwindcss -i ./src/App.css -o ./src/output.css.css --minify"
+    "build:css": "npx tailwindcss -i ./src/App.css -o ./dist/output.css.css --minify"
   },
   "dependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
