@@ -122,7 +122,7 @@ def generate_embeddings(text: str):
         - Input text is tokenized and padded/truncated to a maximum length of 512 tokens to ensure 
           compatibility with BERT's input size.
     """
-    encoded_input = tokenizer(text, return_tensors='pt', padding=True, truncation=True, max_length=512)
+    encoded_input = tokenizer(text.lower(), return_tensors='pt', padding=True, truncation=True, max_length=512)
 
     # Move inputs to GPU
     encoded_input = {key: value.to(device) for key, value in encoded_input.items()}
@@ -170,18 +170,25 @@ def generate_embeddings_for_paper_abstract(content: str):
 
     """
     paper_embeddings = []
-    # Get a list of all the papers from arxiv library
-    paper_metadata = load_papers(query=content)
-
-    # check if the paper_metadata is valid
-    if paper_metadata is None:
+    try:
+        paper_metadata = load_papers(query=content)
+        if not paper_metadata:
+            return None, None
+    except Exception as e:
         return None, None
-
+    
     # iterate through the list and generate embeddings for the paper abstracts
     for data in paper_metadata:
-        embedding_list = generate_embeddings(text=data['summary'])
-        paper_embeddings.append(embedding_list)
+        try:
+            embedding = generate_embeddings(text=data['summary'])
+            paper_embeddings.append(embedding)
+        except Exception as e:
+            return None, None
     
+    paper_embeddings = np.array(paper_embeddings)
+    # Make sure the shapes are compatible
+    paper_embeddings = np.squeeze(paper_embeddings, axis=1)  
+
     return paper_embeddings, paper_metadata
 
 # ranking algorithm using cosine similarity
@@ -219,47 +226,13 @@ def compute_similarity_and_rank_papers(query_embeddings, paper_embeddings):
     
     """
 
-    # Make sure the shapes are compatible
-    query_embeddings = [query_embeddings]
-
     # Compute similarity score
     similarity_score = cosine_similarity(query_embeddings, paper_embeddings)[0]
 
     #return a lsit of tuples with the paper indedx and their respective score
     score = [(idx, score) for idx, score in enumerate(similarity_score)]
 
-    return score
+    # Sort the list based ranks
+    sorted_scores = sorted(score, key= lambda x: x[1], reverse=True)
 
-
-# paper_data = [
-#     {
-#         'title': 'My Dragon',
-#         'author': 'levin'
-#     },
-#     {
-#         'title': 'My Weiner',
-#         'author': 'srajan'
-#     },
-#     {
-#         'title': 'My Life',
-#         'author': 'shreyas'
-#     }
-# ]
-# query_embeddings = [0.1, 0.2, 0.3]  # Example query embedding (1D list)
-# paper_embeddings = [
-#     [0.1, 0.3, 0.1],  # Paper 1 embedding
-#     [0.8, 0.1, 0.5],  # Paper 2 embedding
-#     [0.1, 0.1, 0.3]   # Paper 3 embedding
-# ]
-
-# ranks = compute_similarity_and_rank_papers(query_embeddings=query_embeddings, paper_embeddings=paper_embeddings)
-# sorted_ranks = sorted(ranks, key=lambda x: x[1], reverse=True)
-
-# for rank in sorted_ranks:
-#     index = rank[0]
-#     print(f"""For paper {index}: \
-#             title: {paper_data[index]['title']}\
-#             author: {paper_data[index]['author']}\
-#             score: {int(rank[1] * 10)}
-#     """)
-
+    return sorted_scores
