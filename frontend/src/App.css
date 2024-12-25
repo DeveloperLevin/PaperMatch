@@ -4,19 +4,21 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+#root {
+    display: flex;
+    flex-direction: column;
     font: "Poppins", sans-serif;
-    height: 100%;
-    width: 100%;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-  }
-
-#root {
     height: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
     height: 100vh;
 }

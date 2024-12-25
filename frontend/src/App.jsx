@@ -1,15 +1,16 @@
-import './App.css'
-import Window from './components/Window'
-import NavBar from './components/NavBar'
+import './App.css';
+import NavBar from './components/NavBar';
+import Main from './components/Main';  
 
 function App() {
-
   return (
     <>
       <NavBar />
-      <Window />
+      <div className="bg-zinc-800 text-white flex-grow">
+        <Main />
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

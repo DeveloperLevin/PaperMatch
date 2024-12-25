@@ -1,55 +1,36 @@
-import ThemeToggle from "./ThemeToggle"
-import darkColorLogo from "../assets/light-theme-fyp-logo-removebg-preview-scaled.png"
-import lightColorLogo from "../assets/dark-theme-fyp-logo-removebg-preview-scaled.png"
+import React from "react";
+import { useTheme } from "./ThemeContext"; 
+import '../App.css';
+import darkColorLogo from "../assets/light-theme-fyp-logo-removebg-preview-scaled.png"; 
+import lightColorLogo from "../assets/dark-theme-fyp-logo-removebg-preview-scaled.png"; 
 
 const NavBar = () => {
-    const condition = localStorage.getItem("theme") == "light";
+  // Using the custom useTheme hook to get theme and toggleTheme function
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800 inline-block">
-      {/* Left: Logo and App Name */}
+    <nav className="fixed bg-zinc-800 w-full h-[60px] p-4 shadow-md"> 
       <div className="flex items-center space-x-2 flex-shrink-0">
-        {condition ? (
-            <img
-            src={darkColorLogo} // Replace with the path to your logo
+        {theme === "light" ? (
+          <img
+            src={lightColorLogo} // Replace with the path to your light theme logo
             alt="dark-color-logo"
-            className="h-8 w-8"
-            />
+            className="h-6 w-6 rounded-full"
+          />
         ) : (
-            <img
-            src={lightColorLogo} // Replace with the path to your logo
+          <img
+            src={darkColorLogo} // Replace with the path to your dark theme logo
             alt="light-color-logo"
-            className="h-8 w-8"
-            />
+            className="h-6 w-6 rounded-full"
+          />
         )}
-        <span className="text-xl font-bold text-black dark:text-white">
-          Research AI
+
+        <span className="text-2xl font-bold tracking-wider text-black dark:text-white">
+          PaperMatch
         </span>
       </div>
-
-      <div className="flex justify-center items-center flex-shrink-0 px-4">
-        <div className="mr-8">
-            <ThemeToggle />
-        </div>
-
-        <div className="flex items-center space-x-4 ml-4">
-            { condition ? (
-            <img
-                src={darkColorLogo} // Replace with the path to the profile picture
-                alt="default-profile"
-                className="h-8 w-8 rounded-full"
-            />
-            ) : (
-            <>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded">Login</button>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded">Sign Up</button>
-            </>
-            )}
-        </div>
-      </div>
-
     </nav>
-  )
-}
+  );
+};
 
-export default NavBar
+export default NavBar;

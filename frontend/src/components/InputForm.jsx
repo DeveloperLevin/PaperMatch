@@ -1,32 +1,29 @@
-import { useState } from 'react';
-import { FaArrowUp } from 'react-icons/fa'; // Assuming you're using react-icons
+import React from "react";
+import { FaArrowUp } from "react-icons/fa";
 
-const InputForm = () => {
-  const [query, setQuery] = useState(null);
-
-  const handleChange = (e) => {
-    setQuery(e.target.value)
-    console.log(query)
-  }
-
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-200 p-4">
-      <form className="flex justify-center items-center mx-auto w-full max-w-sm p-2 border border-red rounded-md space-x-4">
-        <input
-          onChange={handleChange}
-          type="text"
-          placeholder="What kind of papers do you like?"
-          className="w-full p-2 bg-gray-200 text-sm outline-none focus:ring-0"
-        />
-        <button
-          type="submit"
-          className="p-2 rounded-full bg-white border border-black text-sm"
-        >
-          <FaArrowUp />
-        </button>
-      </form>
+const InputForm = ({ loading, handleChange, handleSubmit, query }) => {
+    return (
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-2 w-full">
+        <form onSubmit={handleSubmit} className="flex justify-center items-center">
+            <div className="min-w-[400px] flex justify-between items-center px-4 bg-zinc-700 rounded-lg w-[500px]">
+                <input
+                    id="input-text"
+                    onChange={handleChange}
+                    type="text"
+                    placeholder={loading ? "Loading..." : "What kind of papers do you like?"}
+                    disabled={loading}
+                    value={query || ''} 
+                    className="text-sm p-4 bg-zinc-700 outline-none text-white w-full" />
+                <button
+                    type="submit"
+                    className="mr-4 p-2 rounded-full bg-gray-300 text-black hover:bg-gray-100 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    disabled={loading}>
+                    <FaArrowUp />
+                </button>
+            </div>
+        </form>
     </div>
-  );
-};
+    );
+}
 
 export default InputForm;
