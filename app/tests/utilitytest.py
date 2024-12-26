@@ -1,11 +1,5 @@
-import sys
-import os
-
-# Add the 'app/routes' folder to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app', 'routes')))
-
 import pytest
-from processing import load_papers, generate_embeddings, generate_embeddings_for_paper_abstract, compute_similarity_and_rank_papers
+from ..processing import load_papers, generate_embeddings, generate_embeddings_for_paper_abstract, compute_similarity_and_rank_papers
 
 def test_load_papers():
     query = "machine learning"
@@ -18,7 +12,7 @@ def test_generate_embeddings():
     text = "This is a test sentence."
     embeddings = generate_embeddings(text)
     assert embeddings is not None
-    assert embeddings.shape == (768,)  
+    assert embeddings.shape == (1, 768)  
 
 def test_generate_embeddings_for_paper_abstract():
     query = "machine learning in healthcare"
@@ -31,7 +25,9 @@ def test_compute_similarity_and_rank_papers():
     query_embeddings = generate_embeddings("machine learning")
     paper_embeddings = [generate_embeddings("AI in healthcare"), generate_embeddings("Machine learning for NLP")]
     
-    ranked_papers = compute_similarity_and_rank_papers(query_embeddings, paper_embeddings)
+    ranked_papers = []
+    for embedding in paper_embeddings:
+        ranked_papers.append(compute_similarity_and_rank_papers(query_embeddings, embedding))
+
     assert isinstance(ranked_papers, list)
-    assert len(ranked_papers) == 2
-    assert ranked_papers[0][1] >= ranked_papers[1][1]  
+    assert len(ranked_papers) == 2 

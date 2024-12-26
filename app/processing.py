@@ -236,3 +236,7 @@ def compute_similarity_and_rank_papers(query_embeddings, paper_embeddings):
     sorted_scores = sorted(score, key= lambda x: x[1], reverse=True)
 
     return sorted_scores
+
+
+variable = generate_embeddings("this is an input")
+print(variable.shape)
