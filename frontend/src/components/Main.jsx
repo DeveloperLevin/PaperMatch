@@ -1,13 +1,16 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFetch } from "./useFetch";
 import InputForm from "./InputForm";
-
+import Dialog from "./Dialog";
+import ResDialog from "./ResDialog";
+import { v4 as uuidv4 } from "uuid"; 
 
 const Main = () => {
     const [query, setQuery] = useState('');
     const { papers, loading, error, fetchData } = useFetch();  
     const [controller, setController] = useState(null);
+    const [prevData, setPrevData] = useState([]);
     
     const handleChange = (e) => {
         setQuery(e.target.value);
@@ -29,41 +32,55 @@ const Main = () => {
         setController(newController);  
     
         // Call the fetchData function passed from useFetch with the query
-        fetchData("http://localhost:5000/api/recommend", query);
+        await fetchData("http://localhost:5000/api/recommend", query);
+        // // store the previous chat history
+        // setPrevData(prev => [...prev, {id: uuidv4() ,user: query, response: papers}]);
       };
-    
 
+    // Ensure that prevData is updated only when the data has been fetched
+    useEffect(() => {
+        if (papers && papers.length > 0) {
+            setPrevData(prev => [...prev, { id: uuidv4(), user: query, response: papers }]);
+        }
+    }, [papers]); 
+      
     return (
         <>
-            <main className="flex justify-center items-center w-full h-full">
-                <div className="relative overflow-x-auto">
-                    {loading && <p>Loading...</p>}
-                    {error && <p>Error: {error}</p>}
+            <main className="mt-[69px] w-full h-full">
+                <div className="w-full overflow-y-auto h-full p-4">
 
-                    {papers && (
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-400">
-                            <thead className="text-xs uppercase bg-gray-700 text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">Title</th>
-                                    <th scope="col" className="px-6 py-3">Category</th>
-                                    <th scope="col" className="px-6 py-3">Publication Date</th>
-                                    <th scope="col" className="px-6 py-3">Authors</th>
-                                    <th scope="col" className="px-6 py-3">Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {papers.map((paper, index) => (
-                                    <tr key={index} className="bg-gray-800 border-gray-700 hover:bg-gray-600">
-                                        <td className="px-6 py-4"><a href={paper.metadata.link[0]}>{paper.metadata.title}</a></td>
-                                        <td className="px-6 py-4">{paper.metadata.categories ? paper.metadata.categories.join(', ') : 'No categories available'}</td>
-                                        <td className="px-6 py-4">{paper.metadata.published_date}</td>
-                                        <td className="px-6 py-4">{paper.metadata.categories ? paper.metadata.authors.join(', ') : 'No authors available'}</td>
-                                        <td className="px-6 py-4">{paper.score}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
+                    {/* Only render previous chat history if there's data */}
+                    {prevData.length > 0 && prevData.map((data) => (
+                        <>
+                            {/* Render the query dialog (user input) */}
+                            <div key={`query-${data.id}`} className="flex justify-end mr-4">
+                                <Dialog query={data.user} />
+                            </div>
+                        
+                            {/* Render the response dialog (papers related to the query) */}
+                            {data.response && data.response.length > 0 && (
+                                <div key={`response-${data.id}`} className="flex justify-start ml-4 mt-4">
+                                    <ResDialog papers={data.response} />
+                                </div>
+                            )}
+                        </>
+                    ))}
+
+
+                    {/* {papers && (
+                        <>
+                        <div className="flex justify-end mr-4">
+                            <Dialog query={query} />
+                        </div>
+                        <div className="flex justify-start ml-4 mt-4">
+                            <ResDialog papers={papers} />
+                        </div>
+                        </>
+                    )} */}
+
+                    {loading && <p className="text-center mt-4">Loading...</p>}
+                    {error && <p className="text-center mt-4">Error: {error}</p>}
+
                 </div>
             </main>
             <InputForm loading={loading} handleChange={handleChange} handleSubmit={handleSubmit} query={query}/>

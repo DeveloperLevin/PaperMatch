@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <NavBar />
-      <div className="bg-zinc-800 text-white flex-grow">
+      <div className="app bg-zinc-800 text-white h-full flex-grow">
         <Main />
       </div>
     </>
