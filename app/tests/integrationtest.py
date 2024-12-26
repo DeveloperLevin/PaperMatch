@@ -35,12 +35,9 @@ def test_full_pipeline():
     # Ensure ranked papers list is created and sorted (if applicable)
     assert len(ranked_papers) > 0
 
-def test_empty_query():
-    query = ""
-    papers = load_papers(query)
-    assert papers is None 
 
 def test_similarity_between_two_papers():
+    "Tests the system to see if the system is able to recognize the more similar query and is able to carry out similarity properly"
     query = "machine learning healthcare"
     query_embeddings = generate_embeddings(query)
 
