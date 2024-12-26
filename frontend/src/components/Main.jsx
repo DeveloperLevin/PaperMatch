@@ -53,7 +53,7 @@ const Main = () => {
                     {prevData.length > 0 && prevData.map((data) => (
                         <>
                             {/* Render the query dialog (user input) */}
-                            <div key={`query-${data.id}`} className="flex justify-end mr-4">
+                            <div key={`query-${data.id}`} className="flex justify-end mr-4 mt-2">
                                 <Dialog query={data.user} />
                             </div>
                         
