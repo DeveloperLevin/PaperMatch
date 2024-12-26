@@ -1,9 +1,6 @@
 ﻿# PaperMatch - Research Paper Recommendation System
 
-<div class="flex justify-center items-center">
-  ![App Logo](./frontend/src/assets/dark-theme-fyp-logo-removebg-preview-scaled.png)  
-</div>
-
+  ![App Logo](./frontend/src/assets/dark-theme-fyp-logo-removebg-preview-scaled.png) 
 
 ## **Introduction**
 
